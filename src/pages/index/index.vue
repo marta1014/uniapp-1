@@ -3,64 +3,33 @@
     <search @search="disableScroll" />
     <!-- 焦点图 -->
     <swiper class="banner" indicator-dots indicator-color="rgba(255, 255, 255, 0.6)" indicator-active-color="#fff">
-      <swiper-item>
-        <navigator url="/pages/goods/index">
-          <image src="http://static.botue.com/ugo/uploads/banner1.png"></image>
-        </navigator>
-      </swiper-item>
-      <swiper-item>
-        <navigator url="/pages/goods/index">
-          <image src="http://static.botue.com/ugo/uploads/banner2.png"></image>
-        </navigator>
-      </swiper-item>
-      <swiper-item>
-        <navigator url="/pages/goods/index">
-          <image src="http://static.botue.com/ugo/uploads/banner3.png"></image>
+      <swiper-item v-for="item of bannerList" :key="item.goods_id">
+        <navigator :url="'/pages/goods/index?id=' + item.goods_id">
+          <image :src="item.image_src"></image>
         </navigator>
       </swiper-item>
     </swiper>
     <!-- 导航条 -->
     <view class="navs">
-      <navigator open-type="switchTab" url="/pages/category/index">
-        <image src="http://static.botue.com/ugo/uploads/icon_index_nav_4@2x.png"></image>
-      </navigator>
-      <navigator url="/pages/list/index">
-        <image src="http://static.botue.com/ugo/uploads/icon_index_nav_3@2x.png"></image>
-      </navigator>
-      <navigator url="/pages/list/index">
-        <image src="http://static.botue.com/ugo/uploads/icon_index_nav_2@2x.png"></image>
-      </navigator>
-      <navigator url="/pages/list/index">
-        <image src="http://static.botue.com/ugo/uploads/icon_index_nav_1@2x.png"></image>
+      <navigator v-for="item of navList" :key="item.name" open-type="switchTab" url="/pages/category/index">
+        <image :src="item.image_src"></image>
       </navigator>
     </view>
     <!-- 楼层 -->
     <view class="floors">
-      <view class="floor">
+      <view class="floor" v-for="(item,index) of floorList" :key="index">
         <view class="title">
-          <image src="http://static.botue.com/ugo/uploads/pic_floor01_title.png"></image>
+          <image :src="item.floor_title.image_src"></image>
         </view>
         <view class="items">
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor01_1@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor01_2@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor01_3@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor01_4@2x.png"></image>
-          </navigator>
-          <navigator url="/pages/list/index">
-            <image src="http://static.botue.com/ugo/uploads/pic_floor01_5@2x.png"></image>
-          </navigator>
+            <navigator :key="index" v-for="(pro, index) in item.product_list" url="/pages/list/index">
+                      <image :src="pro.image_src"></image>
+            </navigator>
         </view>
       </view>
     </view>
     <!-- 回到顶部 -->
-    <view class="goTop icon-top"></view>
+    <view class="goTop icon-top" @click="goTop" v-if="scrollTop > 300"></view>
   </view>
 </template>
 
@@ -71,7 +40,12 @@
 
     data () {
       return {
-        pageHeight: 'auto'
+        pageHeight: 'auto',
+        scrollTop:0,
+        
+        bannerList:[],
+        navList:[],
+        floorList:[]
       }
     },
 
@@ -81,8 +55,45 @@
     
     methods: {
       disableScroll (ev) {
-        this.pageHeight = ev.pageHeight + 'px';
-      }
+        this.pageHeight = `ev.${pageHeight}px`;
+      },
+     async getBanner(){
+       const {message} = await this.request({
+         url:'api/public/v1/home/swiperdata'
+       })
+	   this.bannerList = message
+     },
+	 async getNavs(){
+	   const {message} = await this.request({
+	     url:'api/public/v1/home/catitems'
+	   })
+	   this.navList = message
+	 },
+	 async getFloor(){
+	   const {message} = await this.request({
+	     url:'api/public/v1/home/floordata'
+	   })
+	   this.floorList = message
+	 },
+     onLoad(){//api
+       this.getBanner()
+	   this.getNavs()
+	   this.getFloor()
+     },
+    async onPullDownRefresh(){//下拉刷新api
+        await this.getBanner()
+        await this.getNavs()
+        await this.getFloor()
+        uni.stopPullDownRefresh()//关闭刷新
+     },
+     goTop(){
+         uni.pageScrollTo({//调用api
+             scrollTop:0
+         })
+     },
+     onPageScroll(e){//专有api
+         this.scrollTop = e.scrollTop
+     }
     }
   }
 </script>

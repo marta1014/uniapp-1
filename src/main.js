@@ -1,7 +1,13 @@
 import Vue from 'vue'
 import App from './App'
 
+import req from '@/utils/request'
 Vue.config.productionTip = false
+
+var plugin = req({
+  baseUrl:`https://api-ugo-web.itheima.net/`
+})
+Vue.use(plugin)
 
 App.mpType = 'app'
 
