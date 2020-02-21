@@ -3,7 +3,9 @@
   <div class="search" :class="{focused: focused}">
     <!-- 搜索框 -->
     <div class="input-wrap" @click="goSearch">
-      <input type="text" :placeholder="placeholder">
+      <input type="text" :placeholder="placeholder"
+       @confirm="confirm"
+      @input="searching" v-model="searchValue">
       <span class="cancle" @click.stop="cancleSearch">取消</span>
     </div>
     <!-- 搜索结果 -->
@@ -20,24 +22,8 @@
       </div>
       <!-- 结果 -->
       <scroll-view scroll-y class="result">
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
-        <navigator url="/pages/goods/index">小米</navigator>
+        <navigator url="/pages/goods/index" 
+        v-for="item of suggestList" :key="item.goods_id">{{item.goods_name}}</navigator>
       </scroll-view>
     </div>
   </div>
@@ -48,7 +34,9 @@
     data () {
       return {
         focused: false,
-        placeholder: ''
+        placeholder: '',
+        searchValue:'',
+        suggestList:[]
       }
     },
     methods: {
@@ -67,6 +55,7 @@
       cancleSearch () {
         this.focused = false;
         this.placeholder = '';
+        this.searchValue = ''
 
         // 触发父组件自定义事件
         this.$emit('search', {
@@ -75,6 +64,20 @@
 
         // 显示tabBar
         uni.showTabBar();
+      },
+     async searching(){//搜索关键词建议 并优化补充请求
+           const { message } = await this.request({
+                     url:"api/public/v1/goods/qsearch",
+                     data:{
+                       query:this.searchValue
+                     }
+                   });       
+             this.suggestList = message             
+      },
+      confirm(){//搜索确认
+            uni.navigateTo({//携带关键字导航至
+                  url:`/pages/list/index?query=${this.searchValue}`
+            })
       }
     }
   }

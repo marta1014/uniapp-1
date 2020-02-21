@@ -13,10 +13,11 @@ export default function (obj) {
                 title:'数据加载中。。。'
             })
 
-            const { url } = params
+            const { url , data } = params
 
             const [err, res] = await uni.request({
-                url: baseUrl + url
+                url: baseUrl + url,
+                data
             })
 
             uni.hideLoading()
