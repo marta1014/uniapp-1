@@ -33,7 +33,9 @@
           </view>
           <!-- 选框 -->
           <view class="checkbox">
-            <icon type="success" size="20" :color="item.goods_want ? '#ea4451' : '#ccc'"></icon>
+            <icon type="success" size="20"
+            @click="choose(index)"
+            :color="item.goods_want ? '#ea4451' : '#ccc'"></icon>
           </view>
         </view>
       </view>
@@ -41,7 +43,9 @@
     <!-- 其它 -->
     <view class="extra">
       <label class="checkall">
-        <icon type="success" color="#ccc" size="20"></icon>
+        <!-- 垃圾uni 竟然连三元表达都郑不明白 还有v-show -->
+        <!-- <icon type="success" :color="buy.length === car.length ? '#ea4451':'#ccc'" size="20"></icon> -->
+        <icon type="success" :color="isCollect ? '#ea4451':'#ccc'" size="20"></icon>
         全选
       </label>
       <view class="total">
@@ -57,6 +61,20 @@
     data(){
       return {
         car:[]
+      }
+    },
+    computed:{
+      buy(){
+        let arr = []
+        this.car.filter(item => {
+          if(item.goods_want){
+            arr.push(item)
+          }
+        })
+        return arr
+      },
+      isCollect(){
+       return this.buy.length === this.car.length
       }
     },
     methods:{
@@ -76,6 +94,11 @@
         uni.setStorageSync('car',this.car)
 
         //输入数量没做 增量限制没做
+      },
+      choose(index){//是否勾选
+      this.car[index].goods_want = !this.car[index].goods_want
+
+      uni.setStorageSync('car',this.car)
       }
     },
     onShow(){
