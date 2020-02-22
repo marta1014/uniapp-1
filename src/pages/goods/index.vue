@@ -22,7 +22,7 @@
     <view class="action">
       <button open-type="contact" class="icon-handset">联系客服</button>
       <text class="cart icon-cart" @click="goCart">购物车</text>
-      <text class="add">加入购物车</text>
+      <text class="add" @click="addCars">加入购物车</text>
       <text class="buy" @click="createOrder">立即购买</text>
     </view>
   </view>
@@ -33,7 +33,9 @@
     data(){
       return {
         itemId:'',
-        detail:null
+        detail:null,
+        //获取本地购物车数据
+        car:uni.getStorageSync('car') || []
       }
     },
     methods: {
@@ -47,6 +49,32 @@
           url: '/pages/order/index'
         })
       },
+      addCars(){
+        let ready = {}
+        // const {goods_name,goods_price,goods_small_logo,goods_number} = this.detail
+        ready.goods_name = this.detail.goods_name
+        ready.goods_price = this.detail.goods_price
+        ready.goods_small_logo = this.detail.goods_small_logo
+        ready.goods_id = this.detail.goods_id
+        ready.goods_number = 1
+        //草 解构赋值不会用
+
+        var has = false  //默认无重复
+
+        this.car.filter(item => {//筛选
+            if(item.goods_id === ready.goods_id) {
+                item.goods_number++
+                has = true
+                return
+            }
+        })
+        if (has === false) {
+          this.car.push(ready)//转存
+        }
+
+        uni.setStorageSync('car',this.car)//至本地
+
+      },
      async getDetail(){//携带id获取详情
       const {message} = await this.request({
           url:'api/public/v1/goods/detail',
@@ -55,7 +83,7 @@
           }
         })
         this.detail = message
-        console.log(this.detail)
+        // console.log(this.detail)
       }
     },
     onLoad(res){
