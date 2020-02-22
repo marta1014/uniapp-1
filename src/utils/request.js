@@ -10,7 +10,8 @@ export default function (obj) {
         vue.prototype.request = async function (params) {
 
             uni.showLoading({
-                title:'数据加载中。。。'
+                title:'数据加载中。。。',
+                mask:true //开启蒙层防频触发
             })
 
             const { url , data } = params
