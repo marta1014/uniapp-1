@@ -51,9 +51,9 @@
         全选
       </label>
       <view class="total">
-        合计: <text>￥</text><label>14110</label><text>.00</text>
+        合计: <text>￥</text><label>{{sum}}</label><text>.00</text>
       </view>
-      <view class="pay">结算(3)</view>
+      <view class="pay">结算({{buy.length}})</view>
     </view>
   </view>
 </template>
@@ -77,6 +77,14 @@
       },
       isCollect(){
        return this.buy.length === this.car.length
+      },
+      //计算总价
+      sum(){
+        var prices = 0
+        this.buy.forEach(item => {
+         prices +=  item.goods_price * item.goods_number
+        })
+        return prices
       }
     },
     methods:{
