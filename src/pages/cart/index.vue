@@ -45,7 +45,9 @@
       <label class="checkall">
         <!-- 垃圾uni 竟然连三元表达都郑不明白 还有v-show -->
         <!-- <icon type="success" :color="buy.length === car.length ? '#ea4451':'#ccc'" size="20"></icon> -->
-        <icon type="success" :color="isCollect ? '#ea4451':'#ccc'" size="20"></icon>
+        <icon type="success"
+        @click="checkAll"
+        :color="isCollect ? '#ea4451':'#ccc'" size="20"></icon>
         全选
       </label>
       <view class="total">
@@ -97,6 +99,15 @@
       },
       choose(index){//是否勾选
       this.car[index].goods_want = !this.car[index].goods_want
+
+      uni.setStorageSync('car',this.car)
+      },
+      checkAll(){
+       var status = !this.isCollect
+
+        this.car.forEach( item => {
+          item.goods_want = status
+        })
 
       uni.setStorageSync('car',this.car)
       }
