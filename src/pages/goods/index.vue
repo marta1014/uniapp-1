@@ -1,33 +1,22 @@
 <template>
-  <view class="wrapper">
+  <view class="wrapper" v-if="detail">
     <!-- 商品图片 -->
-    <swiper class="pics" indicator-dots indicator-color="rgba(255, 255, 255, 0.6)" indicator-active-color="#fff">
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_1.jpg"></image>
-      </swiper-item>
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_2.jpg"></image>
-      </swiper-item>
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_3.jpg"></image>
-      </swiper-item>
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_4.jpg"></image>
-      </swiper-item>
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_5.jpg"></image>
+    <swiper class="pics" indicator-dots
+    indicator-color="rgba(255, 255, 255, 0.6)" indicator-active-color="#fff">
+      <swiper-item v-for="(item,index) of detail.pics" :key="index">
+        <image :src="item.pics_big"></image>
       </swiper-item>
     </swiper>
     <!-- 基本信息 -->
     <view class="meta">
-      <view class="price">￥199</view>
-      <view class="name">初语秋冬新款毛衣女 套头宽松针织衫简约插肩袖上衣</view>
+      <view class="price">{{detail.goods_price}}</view>
+      <view class="name">{{detail.goods_name}}</view>
       <view class="shipment">快递: 免运费</view>
       <text class="collect icon-star">收藏</text>
     </view>
     <!-- 商品详情 -->
     <view class="detail">
-      <rich-text></rich-text>
+      <rich-text :nodes="detail.goods_introduce"></rich-text>
     </view>
     <!-- 操作 -->
     <view class="action">
@@ -41,9 +30,14 @@
 
 <script>
   export default {
-
+    data(){
+      return {
+        itemId:'',
+        detail:null
+      }
+    },
     methods: {
-      goCart () {
+      goCart () {//路由至tab购物车
         uni.switchTab({
           url: '/pages/cart/index'
         })
@@ -52,7 +46,22 @@
         uni.navigateTo({
           url: '/pages/order/index'
         })
+      },
+     async getDetail(){//携带id获取详情
+      const {message} = await this.request({
+          url:'api/public/v1/goods/detail',
+          data:{
+            goods_id:this.itemId
+          }
+        })
+        this.detail = message
+        console.log(this.detail)
       }
+    },
+    onLoad(res){
+      //获取ID
+      this.itemId = res.id
+      this.getDetail()
     }
   }
 </script>

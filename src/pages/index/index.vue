@@ -11,7 +11,8 @@
     </swiper>
     <!-- 导航条 -->
     <view class="navs">
-      <navigator v-for="item of navList" :key="item.name" open-type="switchTab" url="/pages/category/index">
+      <navigator v-for="item of navList" :key="item.name" open-type="switchTab"
+      :url="item.navigator_url">
         <image :src="item.image_src"></image>
       </navigator>
     </view>
@@ -67,13 +68,13 @@
 	   const {message} = await this.request({
 	     url:'api/public/v1/home/catitems'
 	   })
-	   this.navList = message
+     this.navList = message
 	 },
 	 async getFloor(){
 	   const {message} = await this.request({
 	     url:'api/public/v1/home/floordata'
 	   })
-	   this.floorList = message
+     this.floorList = message
    },
    goTop(){
          uni.pageScrollTo({//调用api

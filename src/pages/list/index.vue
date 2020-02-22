@@ -8,7 +8,7 @@
     </view>
     <!-- 商品列表 区域滚动 触底行为需监听区域滚动的行为 若是页面滚动则监听页面滚动-->
     <scroll-view class="goods" scroll-y @scrolltolower="getBottom">
-      <view class="item" @click="goDetail" v-for="item of list" :key="item.goods_id">
+      <view class="item" @click="goDetail(item.goods_id)" v-for="item of list" :key="item.goods_id">
         <!-- 商品图片 -->
         <image class="pic" :src="item.goods_small_logo"></image>
         <!-- 商品信息 -->
@@ -38,9 +38,9 @@
           }
     },
     methods: {
-      goDetail () {
+      goDetail (id) {
         uni.navigateTo({//页面转跳至详情
-          url: '/pages/goods/index'
+          url: '/pages/goods/index?id=' + id
         })
       },
       async getBottom(){//区域滚动触底 该api支持分页（scrolltolower）
@@ -56,7 +56,7 @@
             }
        },
       async getList(){//通过参数请求相关数据展示
-          const {message} =await this.request({
+          const {message} = await this.request({
                 url:'api/public/v1/goods/search',
                 data:{
                       query:this.query,
