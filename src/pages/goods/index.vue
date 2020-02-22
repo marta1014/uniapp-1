@@ -59,6 +59,10 @@
         ready.goods_number = 1
         //草 解构赋值不会用
 
+        //默认 但凡添加就要买 所以加个印记
+
+        ready.goods_want = true
+
         var has = false  //默认无重复
 
         this.car.filter(item => {//筛选
