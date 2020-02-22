@@ -2,13 +2,17 @@
   <view class="wrapper">
     <!-- 收货信息 -->
     <view class="shipment">
-      <view class="dt">收货人: </view>
-      <view class="dd meta">
-        <text class="name">刘德华</text>
-        <text class="phone">13535337057</text>
+      <block v-if="address">
+        <view class="dt">收货人: </view>
+        <view class="dd meta">
+        <text class="name">{{address.userName}}</text>
+        <text class="phone">{{address.telNumber}}</text>
       </view>
       <view class="dt">收货地址:</view>
-      <view class="dd">广东省广州市天河区一珠吉</view>
+      <view class="dd">{{address.info}}</view>
+      </block>
+
+    <button type="primary" v-else @click="getAddress">点击获取地址</button>
     </view>
     <!-- 购物车 -->
     <view class="carts">
@@ -62,7 +66,8 @@
   export default {
     data(){
       return {
-        car:[]
+        car:[],
+        address:null
       }
     },
     computed:{
@@ -110,7 +115,7 @@
 
       uni.setStorageSync('car',this.car)
       },
-      checkAll(){
+      checkAll(){//全选
        var status = !this.isCollect
 
         this.car.forEach( item => {
@@ -118,6 +123,15 @@
         })
 
       uni.setStorageSync('car',this.car)
+      },
+      getAddress(){//获取用户地址
+        uni.chooseAddress({
+            success:(res)=>{
+        this.address = res;
+        // 万物皆对象 =>  详细地址拼接 简化渲染
+        this.address.info = res.provinceName+res.cityName+res.countyName+res.detailInfo;
+    }
+});
       }
     },
     onShow(){
