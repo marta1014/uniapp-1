@@ -74,8 +74,14 @@
 	     url:'api/public/v1/home/floordata'
 	   })
 	   this.floorList = message
-	 },
-     onLoad(){//api
+   },
+   goTop(){
+         uni.pageScrollTo({//调用api
+             scrollTop:0
+         })
+     },
+    },
+    onLoad(){//api
        this.getBanner()
 	   this.getNavs()
 	   this.getFloor()
@@ -86,15 +92,16 @@
         await this.getFloor()
         uni.stopPullDownRefresh()//关闭刷新
      },
-     goTop(){
-         uni.pageScrollTo({//调用api
-             scrollTop:0
-         })
-     },
      onPageScroll(e){//专有api
          this.scrollTop = e.scrollTop
-     }
+     },
+     onShareAppMessage () {//转发功能api
+        return {
+        title: '欢迎使用UGO!',
+        imageUrl: 'http://www.999zx.cn/adm_file/fck/images/2018/4/Image/20184386447866.jpg',
+        path: '/pages/index/index'
     }
+}
   }
 </script>
 
