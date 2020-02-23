@@ -57,7 +57,7 @@
       <view class="total">
         合计: <text>￥</text><label>{{sum}}</label><text>.00</text>
       </view>
-      <view class="pay">结算({{buy.length}})</view>
+      <view class="pay" @click="order">结算({{buy.length}})</view>
     </view>
   </view>
 </template>
@@ -132,6 +132,24 @@
         this.address.info = res.provinceName+res.cityName+res.countyName+res.detailInfo;
     }
 });
+      },
+      order(){//结算校验
+        if(!this.address){
+          uni.showToast({
+            title:'无收获地址'
+          })
+          return
+        }
+        if(!this.buy){
+          uni.showToast({
+            title:''
+          })
+          return
+        }
+        if(!uni.getStorageSync('token')){//未登录？
+          uni.navigateTo('/pages/auth/index')
+          return
+        }
       }
     },
     onShow(){
