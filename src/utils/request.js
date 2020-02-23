@@ -14,11 +14,13 @@ export default function (obj) {
                 mask:true //开启蒙层防频触发
             })
 
-            const { url , data } = params
+            const { url , data ,method,header } = params
 
             const [err, res] = await uni.request({
                 url: baseUrl + url,
-                data
+                data,
+                method,
+                header
             })
 
             uni.hideLoading()

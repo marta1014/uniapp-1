@@ -72,24 +72,30 @@
     },
     computed:{
       buy(){
-        let arr = []
+        if(this.car){
+          let arr = []
         this.car.filter(item => {
           if(item.goods_want){
             arr.push(item)
           }
         })
         return arr
+        }
       },
       isCollect(){
-       return this.buy.length === this.car.length
+       if(this.car.length){
+         return this.buy.length === this.car.length
+       }
       },
       //计算总价
       sum(){
-        var prices = 0
+        if(this.car){
+          var prices = 0
         this.buy.forEach(item => {
          prices +=  item.goods_price * item.goods_number
         })
         return prices
+        }
       }
     },
     methods:{
@@ -118,9 +124,11 @@
       checkAll(){//全选
        var status = !this.isCollect
 
-        this.car.forEach( item => {
+        if(this.car){
+          this.car.forEach( item => {
           item.goods_want = status
         })
+        }
 
       uni.setStorageSync('car',this.car)
       },
@@ -130,32 +138,63 @@
         this.address = res;
         // 万物皆对象 =>  详细地址拼接 简化渲染
         this.address.info = res.provinceName+res.cityName+res.countyName+res.detailInfo;
-    }
-});
+        }
+        });
       },
-      order(){//结算校验
+      async order(){//结算校验
         if(!this.address){
           uni.showToast({
             title:'无收获地址'
           })
           return
         }
-        if(!this.buy){
+        if(!this.buy.length){
           uni.showToast({
-            title:''
+            title:'无选中商品'
           })
           return
         }
         if(!uni.getStorageSync('token')){//未登录？
-          uni.navigateTo('/pages/auth/index')
+          uni.navigateTo({
+           url: '/pages/auth/index'
+          })
           return
+        }
+
+        //校验成功 正式请求结算 创建订单
+
+        //后台不允许 蓝瘦！！！
+        //故无法实现效果
+
+          const {message,meta} = await this.request({
+          url:"api/public/v1/my/orders/create",
+          method:"POST",
+          header:{"Authorization" : uni.getStorageSync("token")},
+          data:{
+          order_price:this.sum,//总价
+          consignee_addr:this.address.info,//地址
+          goods:this.buy//商品列表
+          }
+        })
+
+        //创建订单成功 清空购物车
+        if(meta.status === 200){
+
+          uni.removeStorageSync('car')
+
+          uni.navigateTo({//至订单页
+
+          url:'pages/order/index'
+        })
+        } else {
+          //提示不成功
         }
       }
     },
     onShow(){
-      //此钩子 每次显示都会重新执行
+      //此钩子 重新显示都会重新执行渲染
       this.car = uni.getStorageSync('car' || [])
-      console.log(this.car)
+      // console.log(this.car)
     },
     onLoad(){}
   }

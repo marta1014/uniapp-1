@@ -12,7 +12,7 @@
     <!-- 导航条 -->
     <view class="navs">
       <navigator v-for="item of navList" :key="item.name" open-type="switchTab"
-      :url="item.navigator_url">
+      url="/pages/category/index">
         <image :src="item.image_src"></image>
       </navigator>
     </view>
