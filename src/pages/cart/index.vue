@@ -31,7 +31,7 @@
             <!-- 加减 -->
             <view class="amount">
               <text class="reduce" @click="update(-1,index)">-</text>
-              <input type="number" value="{{item.goods_number}}" class="number">
+              <input type="number" :value="item.goods_number" class="number">
               <text class="plus" @click="update(1,index)">+</text>
             </view>
           </view>

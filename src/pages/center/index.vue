@@ -3,8 +3,8 @@
     <!-- 个人资料 -->
     <view class="profile">
       <view class="meta">
-        <image class="avatar" src="http://static.botue.com/ugo/uploads/monkey.png"></image>
-        <text class="nickname">孙悟空</text>
+        <open-data class="avatar" type="userAvatarUrl"></open-data>
+        <open-data type="userNickName" class="nickname"></open-data>
       </view>
     </view>
     <!-- 统计 -->
@@ -38,15 +38,22 @@
     </view>
     <!-- 其它 -->
     <view class="extra">
-      <view class="item icon-arrow">联系客服</view>
-      <button class="item icon-arrow">意见反馈</button>
+      <view class="item icon-arrow" @click="makePhone">联系客服</view>
+      <button class="item icon-arrow" open-type="feedback">意见反馈</button>
+      <!-- 此处ide无法模拟反馈 -->
     </view>
   </view>
 </template>
 
 <script>
   export default {
-    
+    methods:{
+      makePhone(){//联系客服
+        uni.makePhoneCall({
+          phoneNumber:'15859732507'
+        })
+      }
+    }
   }
 </script>
 
@@ -70,10 +77,12 @@
     .meta {
 
       .avatar {
+        display: block;
         width: 140rpx;
         height: 140rpx;
         border-radius: 50%;
         border: 2rpx solid #fff;
+        overflow: hidden;
       }
 
       .nickname {

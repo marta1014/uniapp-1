@@ -51,17 +51,15 @@
       },
       addCars(){
         let ready = {}
-        // const {goods_name,goods_price,goods_small_logo,goods_number} = this.detail
-        ready.goods_name = this.detail.goods_name
-        ready.goods_price = this.detail.goods_price
-        ready.goods_small_logo = this.detail.goods_small_logo
-        ready.goods_id = this.detail.goods_id
+        const {goods_name,goods_price,goods_small_logo,goods_number} = this.detail
+        ready = {goods_name,goods_price,goods_small_logo,goods_number}
         ready.goods_number = 1
-        //草 解构赋值不会用
 
         //默认 但凡添加就要买 所以加个印记
 
         ready.goods_want = true
+
+        console.log(ready)
 
         var has = false  //默认无重复
 
